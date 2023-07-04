@@ -1,0 +1,24 @@
+{
+  "name": "DiscordDragonBOT",
+  "version": "1.0.0",
+  "description": "射龍門專案",
+  "main": "src/index.js",
+  "dependencies": {
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.3.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bing-Xuan-Lu/DiscordDragonBOT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bing-Xuan-Lu/DiscordDragonBOT/issues"
+  },
+  "homepage": "https://github.com/Bing-Xuan-Lu/DiscordDragonBOT#readme"
+}
