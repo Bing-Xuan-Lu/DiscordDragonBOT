@@ -52,6 +52,7 @@ for (const folder of commandFolders) {
 		const command = require(filePath);
 		if ('data' in command && 'execute' in command) {
 			commands.push(command.data.toJSON());
+      client.commands.set(command.data.name, command);
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
@@ -84,9 +85,9 @@ const rest = new REST().setToken(TOKEN);
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
-  const command = interaction.client.commands.get(interaction.commandName);
+   const command = interaction.client.commands.get(interaction.commandName);
 
-  if (!command) {
+  if (command === undefined) {
     console.error(`No command matching ${interaction.commandName} was found.`);
     return;
   }
