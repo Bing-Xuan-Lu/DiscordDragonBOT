@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  discordbotdev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # 根據你服務的 port 調整
+    volumes:
+      - D:\Develop\DiscordDragonBOT:/app          # 具名 volume，儲存專案檔案
+      - node_modules:/app/node_modules   # 具名 volume，保護 node_modules
+    environment:
+      - NODE_ENV=development
+    # command: npm run dev
+    command: npm run start
+    image: discord-bot-dev
+
+volumes:
+  dc_node_data:                  # 這是專案檔案 volume
+  node_modules:                   # 這是 node_modules volume，避免被覆蓋

@@ -6,6 +6,8 @@ const {
   REST,
   Routes,
   GatewayIntentBits,
+  ActivityType,
+  PresenceUpdateStatus,
 } = require("discord.js");
 
 const { TOKEN, CLIENT_ID, GUILD_ID } = require("dotenv").config().parsed;
@@ -22,6 +24,9 @@ const client = new Client({
 
 client.on("ready", (c) => {
   console.log(`✅ ${c.user.tag} is online.`);
+  c.user.setStatus(PresenceUpdateStatus.Idle);
+  //c.user.setActivity("",{ type:ActivityType.Competing});
+  //c.user.setActivity("??", { type: ActivityType.Playing }); //將機器人的行為設置為正在玩
 });
 
 client.on(Events.MessageCreate, (message) => {
@@ -108,21 +113,24 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
   const now = Date.now();
-	const timestamps = cooldowns.get(command.data.name);
-	const defaultCooldownDuration = 3;
-	const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
+  const timestamps = cooldowns.get(command.data.name);
+  const defaultCooldownDuration = 3;
+  const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
 
-	if (timestamps.has(interaction.user.id)) {
-		const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
+  if (timestamps.has(interaction.user.id)) {
+    const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
 
-		if (now < expirationTime) {
-			const expiredTimestamp = Math.round(expirationTime / 1000);
-			return interaction.reply({ content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`, ephemeral: true });
-		}
-	}
+    if (now < expirationTime) {
+      const expiredTimestamp = Math.round(expirationTime / 1000);
+      return interaction.reply({
+        content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`,
+        ephemeral: true,
+      });
+    }
+  }
 
-	timestamps.set(interaction.user.id, now);
-	setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+  timestamps.set(interaction.user.id, now);
+  setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
   try {
     await command.execute(interaction);
