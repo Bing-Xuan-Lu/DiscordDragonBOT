@@ -8,6 +8,7 @@ const {
   GatewayIntentBits,
   ActivityType,
   PresenceUpdateStatus,
+  Partials,
 } = require("discord.js");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const https = require("https");
@@ -41,7 +42,7 @@ const client = new Client({
     IntentsBitField.Flags.DirectMessages,
     IntentsBitField.Flags.DirectMessageTyping,
   ],
-  partials: ["CHANNEL", "MESSAGE"],
+  partials: [Partials.Channel, Partials.Message],
 });
 
 client.on("ready", (c) => {
