@@ -9,7 +9,7 @@ services:
     ports:
       - "3000:3000"  # 根據你服務的 port 調整
     volumes:
-      - D:\Develop\DiscordDragonBOT:/app          # 具名 volume，儲存專案檔案
+      - ./:/app                                   # 專案根目錄掛載
       - node_modules:/app/node_modules   # 具名 volume，保護 node_modules
     environment:
       - NODE_ENV=development
