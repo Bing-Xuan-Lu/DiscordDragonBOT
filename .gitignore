@@ -400,3 +400,4 @@ FodyWeavers.xsd
 #Custom
 auth.json
 .env
+.mcp.json

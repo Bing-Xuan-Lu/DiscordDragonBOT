@@ -1,6 +1,8 @@
 version: '3.8'
 services:
   discordbotdev:
+    image: discord-bot-dev
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,7 +15,6 @@ services:
       - NODE_ENV=development
     # command: npm run dev
     command: npm run start
-    image: discord-bot-dev
 
 volumes:
   dc_node_data:                  # 這是專案檔案 volume

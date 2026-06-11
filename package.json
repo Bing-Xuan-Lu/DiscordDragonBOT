@@ -4,6 +4,7 @@
   "description": "射龍門專案",
   "main": "src/index.js",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1"
   },
