@@ -38,7 +38,10 @@ const client = new Client({
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.MessageContent,
+    IntentsBitField.Flags.DirectMessages,
+    IntentsBitField.Flags.DirectMessageTyping,
   ],
+  partials: ["CHANNEL", "MESSAGE"],
 });
 
 client.on("ready", (c) => {
