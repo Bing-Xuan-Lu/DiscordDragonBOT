@@ -17,8 +17,8 @@ GEMINI_MODEL=   # 預設 gemini-2.5-flash，可改為 gemini-3.0-flash 等
 
 ```bash
 # 開發模式（hot-reload）
-docker-compose up --build
-# 記得把 docker-compose.yml 的 command 改為 npm run dev
+sudo docker compose up --build
+# 記得把 sudo docker compose.yml 的 command 改為 npm run dev
 ```
 
 ## GCP 部署
@@ -29,21 +29,21 @@ git clone https://github.com/Bing-Xuan-Lu/DiscordDragonBOT.git
 cd DiscordDragonBOT
 cp .env.example .env
 nano .env
-docker-compose up -d --build
+sudo docker compose up -d --build
 
 # 更新
 git pull
-docker-compose up -d --build
+sudo docker compose up -d --build
 ```
 
 ## 常用維運指令
 
 ```bash
 # 查看即時 log
-docker-compose logs -f
+sudo docker compose logs -f
 
 # 停止
-docker-compose down
+sudo docker compose down
 ```
 
 ## Discord 開發者後台
