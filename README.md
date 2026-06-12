@@ -10,15 +10,16 @@ TOKEN=          # Discord Developer Portal → Bot → Reset Token
 CLIENT_ID=      # OAuth2 Client ID
 GUILD_ID=       # 右鍵伺服器圖示 → 複製ID（需開啟開發者模式）
 GEMINI_API_KEY= # aistudio.google.com 申請
-GEMINI_MODEL=   # 預設 gemini-2.5-flash，可改為 gemini-3.0-flash 等
+GEMINI_MODEL=   # 預設 gemini-2.5-flash
+GROQ_API_KEY=   # console.groq.com/keys 申請（免費，不需信用卡）
 ```
 
 ## 本機開發
 
 ```bash
 # 開發模式（hot-reload）
-sudo docker compose up --build
-# 記得把 sudo docker compose.yml 的 command 改為 npm run dev
+docker compose up --build
+# 記得把 docker-compose.yml 的 command 改為 npm run dev
 ```
 
 ## GCP 部署
@@ -29,21 +30,43 @@ git clone https://github.com/Bing-Xuan-Lu/DiscordDragonBOT.git
 cd DiscordDragonBOT
 cp .env.example .env
 nano .env
-sudo docker compose up -d --build
+docker compose up -d --build
+```
 
-# 更新
+```bash
+# 更新程式碼
 git pull
-sudo docker compose up -d --build
+docker compose up -d --build
+```
+
+```bash
+# 新增 npm 套件後（第一次需要清掉舊 volume）
+docker compose down -v
+docker compose up -d --build
 ```
 
 ## 常用維運指令
 
 ```bash
 # 查看即時 log
-sudo docker compose logs -f
+docker compose logs -f
+
+# 查看最新 30 行 log
+docker compose logs --tail=30
 
 # 停止
-sudo docker compose down
+docker compose down
+
+# 停止並清除 volume（加套件時用）
+docker compose down -v
+```
+
+## 權限設定（GCP 首次）
+
+```bash
+# 將自己加入 docker group，之後不需要 sudo
+sudo usermod -aG docker $USER
+# 登出再重新 SSH 生效
 ```
 
 ## Discord 開發者後台
