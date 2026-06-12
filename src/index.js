@@ -161,7 +161,8 @@ client.on(Events.MessageCreate, async (message) => {
     }
   } catch (err) {
     console.error("AI error:", err);
-    await message.reply("AI 暫時無法回應，請稍後再試。");
+    const errMsg = err?.message || String(err);
+    await message.reply(`❌ AI 錯誤：\`${errMsg.slice(0, 1900)}\``);
   }
 });
 
