@@ -13,10 +13,10 @@ const {
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const https = require("https");
 
-const { TOKEN, CLIENT_ID, GUILD_ID, GEMINI_API_KEY } = require("dotenv").config().parsed;
+const { TOKEN, CLIENT_ID, GUILD_ID, GEMINI_API_KEY, GEMINI_MODEL } = require("dotenv").config().parsed;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const geminiModel = genAI.getGenerativeModel({ model: GEMINI_MODEL || "gemini-2.5-flash" });
 
 // 每個 channel 各自維護對話歷史，超過 20 則自動截斷
 const channelChats = new Map();
