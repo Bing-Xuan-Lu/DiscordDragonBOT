@@ -11,12 +11,43 @@ const {
   Partials,
 } = require("discord.js");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
 const https = require("https");
 
-const { TOKEN, CLIENT_ID, GUILD_ID, GEMINI_API_KEY, GEMINI_MODEL } = require("dotenv").config().parsed;
+const { TOKEN, CLIENT_ID, GUILD_ID, GEMINI_API_KEY, GEMINI_MODEL, GROQ_API_KEY } = require("dotenv").config().parsed;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const geminiModel = genAI.getGenerativeModel({ model: GEMINI_MODEL || "gemini-2.5-flash" });
+
+const groq = new Groq({ apiKey: GROQ_API_KEY });
+
+// Groq 主力，Gemini 備援
+async function chatWithFallback(history, userText) {
+  // 把對話歷史轉成 OpenAI 格式（Groq 相容）
+  const groqMessages = [
+    ...history.slice(0, -1).map((h) => ({
+      role: h.role === "model" ? "assistant" : "user",
+      content: h.parts[0].text,
+    })),
+    { role: "user", content: userText },
+  ];
+
+  try {
+    const res = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: groqMessages,
+    });
+    return { reply: res.choices[0].message.content, provider: "Groq" };
+  } catch (err) {
+    if (err.status === 429) {
+      console.warn("Groq 429，fallback 到 Gemini");
+      const chat = geminiModel.startChat({ history: history.slice(0, -1) });
+      const result = await chat.sendMessage(userText);
+      return { reply: result.response.text(), provider: "Gemini" };
+    }
+    throw err;
+  }
+}
 
 // 每個 channel 各自維護對話歷史，超過 20 則自動截斷
 const channelChats = new Map();
@@ -109,12 +140,12 @@ client.on(Events.MessageCreate, async (message) => {
       history.push({ role: "user", parts: [{ text: userText || "[傳送了圖片]" }] });
       history.push({ role: "model", parts: [{ text: reply }] });
     } else {
-      // 純文字：完整上下文對話
+      // 純文字：Groq 主力，Gemini 備援
       history.push({ role: "user", parts: [{ text: userText }] });
 
-      const chat = geminiModel.startChat({ history: history.slice(0, -1) });
-      const result = await chat.sendMessage(userText);
-      reply = result.response.text();
+      const { reply: text, provider } = await chatWithFallback(history, userText);
+      reply = text;
+      console.log(`[AI] 回應來自 ${provider}`);
 
       history.push({ role: "model", parts: [{ text: reply }] });
     }
@@ -129,7 +160,7 @@ client.on(Events.MessageCreate, async (message) => {
       await message.reply(reply);
     }
   } catch (err) {
-    console.error("Gemini error:", err);
+    console.error("AI error:", err);
     await message.reply("AI 暫時無法回應，請稍後再試。");
   }
 });
