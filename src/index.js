@@ -34,7 +34,7 @@ async function chatWithFallback(history, userText) {
 
   try {
     const res = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       messages: groqMessages,
     });
     return { reply: res.choices[0].message.content, provider: "Groq" };
@@ -79,6 +79,8 @@ const client = new Client({
 client.on("ready", (c) => {
   console.log(`✅ ${c.user.tag} is online.`);
   c.user.setStatus(PresenceUpdateStatus.Idle);
+  // n8n 看門狗（spec-ok: 「規格」指 VM 機型，無規格書）
+  require("./watchdog").start(c).catch((err) => console.error("[watchdog] 啟動失敗:", err));
   //c.user.setActivity("",{ type:ActivityType.Competing});
   //c.user.setActivity("??", { type: ActivityType.Playing }); //將機器人的行為設置為正在玩
 });
